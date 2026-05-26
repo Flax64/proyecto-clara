@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # ==========================================
   # 1. FRONTEND (Servidor Web Nginx)
@@ -10,7 +8,7 @@ services:
     ports:
       - "80:80"                  # Expone el puerto web estándar hacia internet
     volumes:
-      - ./frontend:/usr/share/nginx/html  # Inyecta tu carpeta 'frontend' directo al motor de Nginx
+      - ./frontend_CLARA:/usr/share/nginx/html  # Inyecta tu carpeta 'frontend' directo al motor de Nginx
     networks:
       - clara-red
     restart: always

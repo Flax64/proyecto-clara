@@ -5,12 +5,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 # Es decir, está creando una carpeta /app adentro del disco duro virtual de un mini-Linux.
 WORKDIR /app
 # Agarra el archivo físico .csproj del proyecto y lo guarda en la carpeta /app
-COPY backend_CLARA.csproj ./
+COPY backend_CLARA/backend_CLARA.csproj ./
 # Ejecuta este comando mientras se está construyendo la imagen
 # Descarga todas tus librerías de internet y las guarda como una nueva capa sólida dentro de este molde temporal
 RUN dotnet restore
 # Copia el resto del código fuente (controladores, modelos, etc.) y lo sella en la siguiente capa de la imagen
-COPY . .
+COPY backend_CLARA/ ./
 # Ejecuta el compilador de C# internamente. 
 # Transforma todo el código humano en archivos binarios (.dll) y guarda el resultado en una carpeta llamada /out dentro de esta imagen temporal.
 RUN dotnet publish -c Release -o /out
