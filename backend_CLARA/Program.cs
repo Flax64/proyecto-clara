@@ -1,16 +1,14 @@
 using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
-
 builder.WebHost.UseUrls("http://*:5133");
-var app = builder.Build();
 
-// Configuración para permitir CORS
+// 👇 AQUÍ VA EL CORS (ANTES DEL BUILD) 👇
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTodo", policy =>
@@ -21,6 +19,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+// ==========================================
+// EL HORNEADO (Punto de no retorno)
+var app = builder.Build();
+// ==========================================
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -30,7 +34,9 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-app.UseCors("PermitirTodo"); // <-- ¡Esta línea es la clave!
+// 👇 ESTO VA DESPUÉS DEL BUILD 👇
+app.UseCors("PermitirTodo");
+
 app.UseAuthorization();
 
 app.MapControllers();
