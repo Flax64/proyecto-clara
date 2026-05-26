@@ -23,6 +23,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 # Se graba en la configuración interna que este molde está diseñado para recibir tráfico por el puerto 5133
 EXPOSE 5133
+ENV ASPNETCORE_URLS=http://+:5133
 # Va a la imagen temporal que etiquetamos como build, saca únicamente los binarios ya terminados (.dll) de la carpeta /out, y los inyecta en nuestra imagen definitiva. 
 # La imagen pesada inicial se desecha.
 COPY --from=build /out .
