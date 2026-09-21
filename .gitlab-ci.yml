@@ -1,0 +1,31 @@
+stages:
+  - deploy
+
+deploy_ec2:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    # Instalar cliente SSH y configurar el agente
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    # Añadir la llave privada (tr -d '\r' previene errores de formato de saltos de línea)
+    - echo "$EC2_SSH_KEY" | tr -d '\r' | ssh-add -
+    # Configurar known_hosts para evitar el prompt de confirmación
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+  script:
+    # Conexión SSH y ejecución de comandos en la instancia EC2
+    - ssh $EC2_USER@$EC2_HOST "
+        cd $EC2_PROJECT_PATH &&
+        echo 'Actualizando código...' &&
+        git pull origin main &&
+        echo 'Reconstruyendo contenedores...' &&
+        docker compose down &&
+        docker compose up -d --build &&
+        echo 'Limpiando imágenes...' &&
+        docker image prune -f &&
+        echo 'Despliegue terminado.'
+      "
+  only:
+    - main
